@@ -75,10 +75,10 @@ The frontend is a React SPA built with Vite, styled with Tailwind, and focused o
 
 ---
 
-## Trade-offs
+## Trade-offs & Future Considerations
 
-**Vite over Next.js.** This is a private dashboard — SEO is irrelevant. Vite is simpler and faster for a pure SPA. If the app grew to include public-facing pages, Next.js with React Server Components would be the right pivot.
+Building software is about picking the right tool for the current constraints. Here is what I deliberately chose *not* to use for this assessment, and why:
 
-**Express over NestJS.** At this scale, manual dependency injection is three lines of code. NestJS is a great framework, but it would be over-engineering here. If the domain grew to need microservices, WebSockets, or background jobs, NestJS would earn its complexity.
-
-**In-memory storage.** Because `TaskService` depends on `ITaskRepository`, moving to a real database is a contained change — write a `PrismaTaskRepository`, swap it in at the composition root, and nothing else changes. No business logic, no controllers, no routes.
+* **Vite SPA over Next.js:** Vite provides a blazing-fast dev experience for a private dashboard. We trade away Server-Side Rendering (SSR), Static Site Generation (SSG), and SEO optimizations. If the app expands to include public-facing pages, Next.js is the obvious pivot.
+* **Express over NestJS:** Express allows me to explicitly demonstrate how to wire up strict architectural layers manually. We trade away Nest's out-of-the-box scalability. If the domain grows to need microservices, WebSockets, or a larger engineering team, NestJS's unified structure becomes necessary.
+* **In-Memory Storage over an ORM:** This keeps the project entirely self-contained so reviewers don't have to spin up Docker or PostgreSQL just to run it. We trade away the heavy lifting of a modern ORM (like Prisma or TypeORM) such as automated migrations and relationship handling. However, because the app relies on the `ITaskRepository` interface, migrating to a real ORM later is a trivial, single-file change.
